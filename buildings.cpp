@@ -22,6 +22,20 @@ using namespace tinyxml2;
 
 
 /**
+  * @brief tolower, makes an entire string lowercase
+  *
+  * @return s, the lowercase string
+  */
+
+string toLowerBuildings(string s)
+{
+  for (char& c : s) c = tolower(c);
+
+  return s;
+}
+
+
+/**
   * @brief constructor to retrieve all the buildings from the open street map.
   *
   * Given an XML document, reads through the document and 
@@ -148,11 +162,83 @@ Buildings::Buildings(XMLDocument& xmldoc)
   *
   * @return nothing
   */
-void Buildings::print_all()
+void Buildings::print()
 {
   for (Building B : this->osmBuildings) {
     B.print();
   }
   
   return;
+}
+
+void Buildings::findAndPrint(Buildings& buildings, Nodes& nodes, int num_of_buildings)
+{
+  //
+  // b ENTER => just list all the buildings
+  // b building_name ENTER => search for buildings containing that name
+  //
+  string name;
+  getline(cin, name);  // read rest of line in case multiple words in building name
+  while (isspace(name[0])) {
+    name.erase(0, 1);
+  }
+
+  if (name == "") {
+    buildings.print();
+  }
+
+  else {
+    // 
+    // find every building that contains this name, use 
+    // a case-insensitive search and print a detailed output:
+    //
+
+    string check_name = toLowerBuildings(name);
+    bool check = false;
+
+    for (int i = 0; i < num_of_buildings; i++){
+      string lowercase_building = toLowerBuildings(this->osmBuildings[i].getName());
+
+      if (lowercase_building.find(check_name) != string::npos){
+        this->osmBuildings[i].print(nodes);
+        check = true;
+      }
+    }
+
+    if (check == false){
+      cout << "No such building" << endl;
+    }
+
+  }
+
+  return;
+
+}
+
+vector< pair < int, pair <double, double> > > Buildings::fast_food_search(Buildings& buildings, Nodes& nodes, int num_of_buildings)
+{
+  vector < pair < int, pair <double, double> > > result;
+
+  string building_name;
+  getline(cin, building_name);  // read rest of line in case multiple words in building_name
+
+  while (isspace(building_name[0])){
+    building_name.erase(0, 1);
+  } 
+
+  string check_name = toLowerBuildings(building_name);
+
+  // Loop through all the buildings to check
+  for (int i = 0; i < num_of_buildings; i++){
+    string lowercase_building = toLowerBuildings(buildings.osmBuildings[i].getName());
+
+    // Check if input text matches each building
+    if (lowercase_building.find(check_name) != string::npos){
+      pair <double, double> coordinates = buildings.osmBuildings[i].getLocation(nodes);
+      pair < int, pair <double, double> > value = make_pair(i, coordinates);
+      result.push_back(value);
+    }
+  }
+
+  return result;
 }

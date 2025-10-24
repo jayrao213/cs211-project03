@@ -112,9 +112,11 @@ bool Nodes::find(long long id, double& lat, double& lon, bool& isEntrance)
     return false;  
   }
   else { // found:
+    lat = (*iter).second.getLat();
+    lon = (*iter).second.getLon();
+    isEntrance = (*iter).second.getIsEntrance();
     return true; 
   }
-
 }
 
 //

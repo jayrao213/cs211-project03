@@ -12,6 +12,8 @@
 #include <vector>
 
 #include "amenity.h"
+#include "buildings.h"
+#include "dist.h"
 #include "tinyxml2.h"
 
 using namespace std;
@@ -43,7 +45,9 @@ public:
   *
   * @return nothing
   */
-  void print_all();
+  void print();
+  void findAndPrint(Amenities& amenities, Nodes& nodes, int num_of_amenities);
+  void findNearestFastFood(Amenities& amenities, Buildings& buildings, Nodes& nodes, int num_of_amenities, vector< pair < int, pair <double, double> > > coordinates_list);
 
 };
 

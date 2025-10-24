@@ -42,8 +42,9 @@ public:
   *
   * @return nothing
   */
-  void print_all();
-
+  void print();
+  void findAndPrint(Buildings& buildings, Nodes& nodes, int num_of_buildings);
+  vector< pair < int, pair <double, double> > > fast_food_search(Buildings& buildings, Nodes& nodes, int num_of_buildings);
 };
 
 
