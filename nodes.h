@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <vector>
+#include <map>
 
 #include "node.h"
 #include "tinyxml2.h"
@@ -39,7 +39,7 @@ using namespace tinyxml2;
 class Nodes
 {
 private:
-  vector<Node> osmNodes;
+  map<long long, Node> osmNodes;
 
 public:
   //

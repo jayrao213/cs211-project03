@@ -24,7 +24,7 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
+#include <utility>
 #include <algorithm>
 #include <cassert>
 
@@ -89,7 +89,7 @@ Nodes::Nodes(XMLDocument& xmldoc)
     // This creates an object then pushes copy into vector:
     //
     Node N(id, latitude, longitude, entrance);
-    this->osmNodes.push_back(N);
+    this->osmNodes.emplace(id, Node(id, latitude, longitude, entrance));
 
     //
     // next node element in the XML doc:
@@ -107,51 +107,14 @@ Nodes::Nodes(XMLDocument& xmldoc)
 //
 bool Nodes::find(long long id, double& lat, double& lon, bool& isEntrance) 
 {
-  //
-  // linear search:
-  //
-  // for (Node& N : this->osmNodes)
-  // {
-  //   if (N.getID() == id) {
-  //     lat = N.getLat();
-  //     lon = N.getLon();
-  //     isEntrance = N.getIsEntrance();
-
-  //     return true;
-  //   }
-  // }
-
-  // binary search:
-  
-  int low = 0;
-  int high = (int)this->osmNodes.size() - 1;
-
-  while (low <= high) {
-    int mid = low + ((high -low) / 2);
-
-    long long nodeid = this->osmNodes[mid].getID();
-
-    if (id == nodeid) {
-      lat = this->osmNodes[mid].getLat();
-      lon = this->osmNodes[mid].getLon();
-      isEntrance = this->osmNodes[mid].getIsEntrance();
-
-      return true;
-    }
-
-    else if (id < nodeid) {
-      high = mid - 1;
-    }
-
-    else {
-      low = mid + 1;
-    }
+  map<long long, Node>::iterator iter = this->osmNodes.find(id);
+  if (iter == this->osmNodes.end()) { // not found:
+    return false;  
+  }
+  else { // found:
+    return true; 
   }
 
-  //
-  // if get here, not found:
-  //
-  return false;
 }
 
 //
